@@ -8,7 +8,7 @@ export default async function handler(req,res){
    payment_method_types:["card"],
    line_items:[
      {
-       price: process.env.PRICE_1,
+       price: "price_1TCNlrBuvTC0MP1uX2xU863b", ,
        quantity:1
      }
    ],
