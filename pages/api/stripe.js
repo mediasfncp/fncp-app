@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       mode: "payment",
       line_items: [
         {
-          price: process.env.PRICE_1,
+          price: "price_1TCOb9BuvTC0MP1uzx28tQ8s",
           quantity: 1
         }
       ],
