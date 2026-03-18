@@ -1,0 +1,12 @@
+club-plage-reservation
+│
+├ backend
+│   server.js
+│   database.sql
+│
+├ frontend
+│   index.html
+│   style.css
+│   app.js
+│
+└ package.json
