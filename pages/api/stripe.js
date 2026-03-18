@@ -1,21 +1,30 @@
 import Stripe from "stripe"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET)
+export default async function handler(req, res) {
 
-export default async function handler(req,res){
+  const stripe = new Stripe(process.env.STRIPE_SECRET)
 
- const session = await stripe.checkout.sessions.create({
-   payment_method_types:["card"],
-   line_items:[
-     {
-       price: "price_1TCNlrBuvTC0MP1uX2xU863b", ,
-       quantity:1
-     }
-   ],
-   mode:"payment",
-   success_url:"https://fncp-app.vercel.app",
-   cancel_url:"https://fncp-app.vercel.app"
- })
+  try {
 
- res.json({url:session.url})
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price: process.env.PRICE_1,
+          quantity: 1
+        }
+      ],
+      success_url: "https://fncp-app.vercel.app",
+      cancel_url: "https://fncp-app.vercel.app"
+    })
+
+    res.status(200).json({ url: session.url })
+
+  } catch (error) {
+
+    console.log(error)
+
+    res.status(500).json({ error: "Erreur Stripe" })
+  }
 }
