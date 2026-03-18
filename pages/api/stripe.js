@@ -1,52 +1,33 @@
-export default function Home() {
+import Stripe from "stripe"
 
-  const handleReservation = async () => {
-    try {
-      const res = await fetch("/api/stripe")
-      const data = await res.json()
+export default async function handler(req, res) {
 
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        alert("Erreur paiement")
-      }
+  try {
 
-    } catch (error) {
-      console.error(error)
-      alert("Erreur serveur")
-    }
+    const stripe = new Stripe(process.env.STRIPE_SECRET)
+
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: "Cours FNCP"
+            },
+            unit_amount: 2000
+          },
+          quantity: 1
+        }
+      ],
+      success_url: "https://fncp-app.vercel.app",
+      cancel_url: "https://fncp-app.vercel.app"
+    })
+
+    res.status(200).json({ url: session.url })
+
+  } catch (err) {
+    res.status(500).json({ error: err.message })
   }
-
-  return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100vh",
-      background: "#f0fdfd"
-    }}>
-
-      <h1 style={{ color: "#00CCCC", fontSize: "32px" }}>
-        FNCP - Réservation Natation
-      </h1>
-
-      <button
-        onClick={handleReservation}
-        style={{
-          marginTop: "30px",
-          padding: "15px 30px",
-          fontSize: "18px",
-          background: "#FF9900",
-          color: "white",
-          border: "none",
-          borderRadius: "10px",
-          cursor: "pointer"
-        }}
-      >
-        Réserver une séance
-      </button>
-
-    </div>
-  )
 }
