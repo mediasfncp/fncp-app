@@ -11,7 +11,13 @@ export default async function handler(req, res) {
       payment_method_types: ["card"],
       line_items: [
         {
-          price: process.env.PRICE_1,
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: "Cours de natation FNCP"
+            },
+            unit_amount: 2000
+          },
           quantity: 1
         }
       ],
@@ -22,9 +28,6 @@ export default async function handler(req, res) {
     res.status(200).json({ url: session.url })
 
   } catch (error) {
-
-    console.log(error)
-
-    res.status(500).json({ error: "Erreur Stripe" })
+    res.status(500).json({ error: error.message })
   }
 }
